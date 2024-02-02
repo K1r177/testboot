@@ -1,0 +1,185 @@
+{{ header }}
+<div id="product-search" class="container-fluid">
+
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <nav class="breadcrumb bg-light mb-30">
+                 {% for breadcrumb in breadcrumbs %}
+                    {% if loop.last %}
+                    <span class="breadcrumb-item active">{{ breadcrumb.text }}</span>
+                    {% else %}
+                    <a class="breadcrumb-item text-dark" href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+                    {% endif %}
+                 {% endfor %}
+            </nav>
+        </div>
+    </div>
+
+    <div class="row px-xl-5">
+
+        {{ column_left }}
+
+        {% if column_left and column_right %}
+            {% set class = 'col-lg-6 col-md-8' %}
+        {% elseif column_left or column_right %}
+            {% set class = 'ccol-lg-9 col-md-8' %}
+        {% else %}
+            {% set class = 'col-12' %}
+        {% endif %}
+
+        <!-- Shop Product Start -->
+        <div class="{{ class }}">
+            
+              
+                {% if products %}
+
+                <div class="row"> 
+
+                    <div class="col-sm-6">
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="input-sort">{{ text_sort }}</label>
+                        </div>
+                        <select id="input-sort" class="custom-select" onchange="location = this.value;">
+                          {% for sorts in sorts %}
+                          {% if sorts.value == '%s-%s'|format(sort, order) %}
+                          <option value="{{ sorts.href }}" selected="selected">{{ sorts.text }}</option>
+                          {% else %}
+                          <option value="{{ sorts.href }}">{{ sorts.text }}</option>
+                          {% endif %}
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="input-limit">{{ text_limit }}</label>
+                        </div>
+                        <select id="input-limit" class="custom-select" onchange="location = this.value;">
+                          {% for limits in limits %}
+                          {% if limits.value == limit %}
+                          <option value="{{ limits.href }}" selected="selected">{{ limits.text }}</option>
+                          {% else %}
+                          <option value="{{ limits.href }}">{{ limits.text }}</option>
+                          {% endif %}
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+
+                </div>
+
+                <div class="row pb-3">
+                {% for product in products %}
+                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src="{{ product.thumb }}" alt="{{ product.name }}">
+                            <div class="product-action">
+                                <a type="button" class="btn btn-outline-dark btn-square" onclick="cart.add('{{ product.product_id }}');" ><i class="fa fa-shopping-cart"></i></a>
+                                <a type="button" class="btn btn-outline-dark btn-square" onclick="wishlist.add('{{ product.product_id }}');" ><i class="far fa-heart"></i></a>
+                                <a type="button" class="btn btn-outline-dark btn-square" onclick="compare.add('{{ product.product_id }}');"><i class="fa fa-sync-alt"></i></a>
+                            </div>
+                        </div>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate" href="{{ product.href }}">{{ product.name }}</a>
+                            {% if product.price %}
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                {% if not product.special %}
+                                <h5>{{ product.price }}</h5>
+                                {% else %}
+                                <h5>{{ product.special }}</h5>
+                                <h6 class="text-muted ml-2">
+                                    <del>{{ product.price }}</del>
+                                </h6>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                            {% if product.rating %}
+                            <div class="d-flex align-items-center justify-content-center mb-1">
+                                {% for i in 1..5 %}
+                                    {% if product.rating < i %}
+                                    <small class="far fa-star text-primary mr-1"></small>
+                                    {% else %}
+                                    <small class="fa fa-star text-primary mr-1"></small>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="col-12">
+                    <p>{{ text_empty }}</p>
+                </div>
+                {% endif %}
+                </div>
+
+   
+                <div class="row">
+                    <div class="col-12">
+                        <nav>
+                        {{ pagination }}
+                        </nav>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <!-- Shop Product End -->
+    </div>
+
+</div>
+<script type="text/javascript"><!--
+    $('#button-search').bind('click', function() {
+        url = 'index.php?route=product/search';
+    
+        var search = $('#content input[name=\'search\']').prop('value');
+    
+        if (search) {
+            url += '&search=' + encodeURIComponent(search);
+        }
+    
+        var category_id = $('#content select[name=\'category_id\']').prop('value');
+    
+        if (category_id > 0) {
+            url += '&category_id=' + encodeURIComponent(category_id);
+        }
+    
+        var sub_category = $('#content input[name=\'sub_category\']:checked').prop('value');
+    
+        if (sub_category) {
+            url += '&sub_category=true';
+        }
+    
+        var filter_description = $('#content input[name=\'description\']:checked').prop('value');
+    
+        if (filter_description) {
+            url += '&description=true';
+        }
+    
+        location = url;
+    });
+    
+    $('#content input[name=\'search\']').bind('keydown', function(e) {
+        if (e.keyCode == 13) {
+            $('#button-search').trigger('click');
+        }
+    });
+    
+    $('select[name=\'category_id\']').on('change', function() {
+        if (this.value == '0') {
+            $('input[name=\'sub_category\']').prop('disabled', true);
+        } else {
+            $('input[name=\'sub_category\']').prop('disabled', false);
+        }
+    });
+    
+    $('select[name=\'category_id\']').trigger('change');
+    --></script>
+    {{ footer }}

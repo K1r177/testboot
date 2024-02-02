@@ -1,0 +1,70 @@
+{% for filter_group in filter_groups %}
+<h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">{{ filter_group.name }}</span>
+</h5>
+<div class="bg-light p-4 mb-30 filter-block">
+    {% for filter in filter_group.filter %}
+    <div>
+        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+            {% if filter.filter_id in filter_category %}
+            <input type="checkbox" class="custom-control-input" name="filter[]" value="{{ filter.filter_id }}" id="{{ filter.name }}-{{ filter.filter_id }}" checked>
+            {% else %}
+            <input type="checkbox" class="custom-control-input" name="filter[]" value="{{ filter.filter_id }}" id="{{ filter.name }}-{{ filter.filter_id }}">
+            {% endif %}
+            <label class="custom-control-label" for="{{ filter.name }}-{{ filter.filter_id }}"> {{ filter.name }}</label>
+            {#<span class="badge border font-weight-normal">1000</span>#}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+<div class="panel-footer">
+    <button type="button" id="button-filter" class="btn btn-primary btn-block">{{ button_filter }}</button>
+  </div>
+
+<script type="text/javascript"><!--
+    /* $('#button-filter').on('click', function() {
+        filter = [];
+    
+        $('input[name^=\'filter\']:checked').each(function(element) {
+            filter.push(this.value);
+        });
+    
+        location = '{{ action }}&filter=' + filter.join(',');
+    }); */
+    $('.filter-block input').on('change', function(){
+
+        let filter = [];
+
+        $('input[name^=\'filter\']:checked').each(function(element) {
+            filter.push(this.value);
+        });
+        
+        let url = '{{ action }}&filter=' + filter.join(',');
+
+        let loader = $('.ajax-loader');
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: {url: url},
+            beforeSend: function(){ //перед отправкой
+                loader.fadeIn();
+            },
+            success: function(json){ //ответ
+                console.log(json);
+                loader.fadeOut(300, function(){
+                    let res = JSON.parse(json);
+                    history.pushState({}, '', res.url);
+                    $('.product-items').html(res.products);
+                    $('.pagination-box').html(res.pagination);
+                });
+            },
+            error: function(){
+                alert('Error!');
+            }
+        });
+
+        console.log(url);
+    });
+    //--></script> 

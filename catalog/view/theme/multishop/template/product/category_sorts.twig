@@ -1,0 +1,14 @@
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <label class="input-group-text" for="input-sort">{{ text_sort }}</label>
+  </div>
+  <select id="input-sort" class="custom-select" onchange="location = this.value;">
+    {% for sorts in sorts %}
+    {% if sorts.value == '%s-%s'|format(sort, order) %}
+    <option value="{{ sorts.href }}" selected="selected">{{ sorts.text }}</option>
+    {% else %}
+    <option value="{{ sorts.href }}">{{ sorts.text }}</option>
+    {% endif %}
+    {% endfor %}
+  </select>
+</div>

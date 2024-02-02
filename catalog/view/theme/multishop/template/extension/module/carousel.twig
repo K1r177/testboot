@@ -1,0 +1,21 @@
+<!-- Vendor Start -->
+    <div class="container-fluid py-5">
+        <div class="row px-xl-5">
+            <div class="col">
+                <div class="owl-carousel vendor-carousel">
+                    {% for banner in banners %}
+                        {% if banner.link %}
+                        <a href="{{ banner.link }}" class="bg-light p-4">
+                            <img src="{{ banner.image }}" alt="{{ banner.title }}">
+                        </a>
+                        {% else %}
+                        <div class="bg-light p-4">
+                            <img src="{{ banner.image }}" alt="{{ banner.title }}">
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Vendor End -->

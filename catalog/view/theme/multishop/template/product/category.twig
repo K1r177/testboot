@@ -1,0 +1,143 @@
+{{ header }}
+<div id="product-category" class="container-fluid position-relative">
+
+  <div class="ajax-loader">
+    <img src="/catalog/view/theme/multishop/assets/img/ripple.svg" alt="" />
+  </div>
+  
+  <div class="row px-xl-5">
+      <div class="col-12">
+          <nav class="breadcrumb bg-light mb-30">
+              {% for breadcrumb in breadcrumbs %}
+                  {% if loop.last %}
+                  <span class="breadcrumb-item active">{{ breadcrumb.text }}</span>
+                  {% else %}
+                  <a class="breadcrumb-item text-dark" href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+                  {% endif %}
+              {% endfor %}
+          </nav>
+      </div>
+  </div>
+
+  <div class="row px-xl-5">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-lg-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-lg-9 col-md-8' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <h2 class="section-title position-relative text-uppercase mb-4">
+        <span class="bg-secondary pr-3 h3">{{ heading_title }}</span>
+      </h2>
+      {% if thumb or description %}
+      <div class="row"> {% if thumb %}
+        <div class="col-sm-2"><img src="{{ thumb }}" alt="{{ heading_title }}" title="{{ heading_title }}" class="img-thumbnail" /></div>
+        {% endif %}
+        {% if description %}
+        <div class="col-sm-10">{{ description }}</div>
+        {% endif %}</div>
+      <hr>
+      {% endif %}
+      {% if categories %}
+      <h3>{{ text_refine }}</h3>
+      {% if categories|length <= 5 %}
+      <div class="row">
+        <div class="col-sm-3">
+          <ul>
+            {% for category in categories %}
+            <li><a href="{{ category.href }}">{{ category.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% else %}
+      <div class="row">{% for category in categories|batch((categories|length / 4)|round(1, 'ceil')) %}
+        <div class="col-sm-3">
+          <ul>
+            {% for child in category %}
+            <li><a href="{{ child.href }}">{{ child.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endfor %}</div>
+      <br/>
+      {% endif %}
+      {% endif %}
+      {% if products %}
+      <div class="row">
+        <!-- <div class="col-md-2 col-sm-6 hidden-xs">
+          <div class="btn-group btn-group-sm">
+            <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_list }}"><i class="fa fa-th-list"></i></button>
+            <button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_grid }}"><i class="fa fa-th"></i></button>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="form-group"><a href="{{ compare }}" id="compare-total" class="btn btn-link">{{ text_compare }}</a></div>
+        </div> -->
+
+        <div class="col-sm-6 ajax_sorts">
+          {% include 'multishop/template/product/category_sorts.twig' %}
+        </div>
+
+        {#<div class="col-sm-6">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="input-limit">{{ text_limit }}</label>
+            </div>
+            <select id="input-limit" class="custom-select" onchange="location = this.value;">
+              {% for limits in limits %}
+              {% if limits.value == limit %}
+              <option value="{{ limits.href }}" selected="selected">{{ limits.text }}</option>
+              {% else %}
+              <option value="{{ limits.href }}">{{ limits.text }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+        </div>#}
+
+      </div>
+
+      <div class="row product-items">
+        {% for product in products %}
+        <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+        {% include 'multishop/template/product/product_card.twig' %}
+        </div>
+        {% endfor %} 
+      </div>
+
+      <div class="row pagination-box">
+
+        {#<div class="col-sm-6 text-left">{{ pagination }}</div>
+        <div class="col-sm-6 text-right">{{ results }}</div>#}
+
+        <!-- <div class="col-12">
+            <nav>
+              <ul class="pagination justify-content-center">
+                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+              </ul>
+            </nav>
+        </div> -->
+        {{ pagination }}
+
+      </div>
+      {% endif %}
+
+      {% if not categories and not products %}
+      <p>{{ text_empty }}</p>
+      <div class="buttons">
+        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+      </div>
+      {% endif %}
+      {{ content_bottom }}
+    </div>
+    {{ column_right }}
+  </div>
+</div>
+{{ footer }} 
