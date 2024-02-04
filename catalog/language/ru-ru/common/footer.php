@@ -16,3 +16,5 @@ $_['text_wishlist']     = 'Закладки';
 $_['text_newsletter']   = 'Рассылка';
 $_['text_powered']      = 'Работает на <a href="http://opencart-russia.ru">OpenCart "Русская сборка"</a><br /> %s &copy; %s';
 
+$_['text_btn_close']   = 'Закрыть';
+
