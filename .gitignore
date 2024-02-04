@@ -32,3 +32,5 @@
 
 # If you want to ignore install file use following lines [on development mode]
 # /upload/install/*
+
+/image/cache/*
